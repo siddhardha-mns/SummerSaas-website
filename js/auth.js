@@ -40,17 +40,61 @@ function doLogin() {
     }
   }
 
-  // PARTICIPANT LOGIN FLOW — email must exist in sheet data
-  const participant = participants.find(p =>
-    p.email.toLowerCase() === user.toLowerCase()
-  );
+  // PARTICIPANT LOGIN FLOW
+  let participant = participants.find(p => p.email.toLowerCase() === user.toLowerCase());
 
-  if (!participant) {
-    showToast('❌ Email not found. Please use the email you registered with.');
-    return;
+  if (participant) {
+    completeParticipantLogin(participant, user);
+  } else {
+    // If not found locally, try fetching from Apps Script directly
+    showToast('⏳ Looking up participant...');
+    const url = typeof _appsScriptUrl !== 'undefined' ? _appsScriptUrl : '';
+    if (!url) {
+      showToast('❌ Email not found locally and no Apps Script URL configured.');
+      return;
+    }
+    
+    const fetchUrl = url + (url.includes('?') ? '&' : '?') + 'action=getParticipants';
+    fetch(fetchUrl)
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) throw new Error(data.error);
+        const rows = data.participants || [];
+        
+        // Update local state
+        participants = rows.map(r => ({
+          id:      r.id || r.regId || '',
+          name:    r.name || '',
+          email:   r.email || '',
+          phone:   r.phone || '',
+          college: r.college || '',
+          team:    r.team || r.teamName || '—',
+          track:   r.track || r.selectedTrack || '—',
+          role:    r.role || '',
+          status:  r.status || 'pending',
+          time:    r.time || '—',
+        }));
+        
+        if (typeof generateParticipantIds === 'function') generateParticipantIds();
+        if (typeof saveData === 'function') saveData();
+        
+        participant = participants.find(p => p.email.toLowerCase() === user.toLowerCase());
+        
+        if (participant) {
+          showToast('✅ Participant found!');
+          completeParticipantLogin(participant, user);
+        } else {
+          showToast('❌ Email not found in Google Sheet. Please use the email you registered with.');
+        }
+      })
+      .catch(err => {
+        showToast('⚠️ Could not connect to Google Sheets: ' + err.message);
+      });
   }
+}
 
-  generateParticipantIds();
+function completeParticipantLogin(participant, user) {
+  if (typeof generateParticipantIds === 'function') generateParticipantIds();
   showPage('page-participant');
   document.getElementById('p-username').textContent = user;
   renderParticipantAnnouncements();
