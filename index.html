@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CENTLE Hack Portal — SummerSaaS x DevCatalyst</title>
+<title>SummerSaaS Hack Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="css/styles.css"/>
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
@@ -15,12 +15,7 @@
 <div id="page-login" class="page active">
   <div class="login-wrap">
     <div class="login-logo">
-      <div class="brand-logos">
-        <img src="summersaas_logo.png" class="brand-logo" alt="SummerSaaS">
-        <span class="brand-x">X</span>
-        <img src="devcatalyst_transparent.png" class="devcat-logo invert-white" alt="DevCatalyst">
-      </div>
-      <div class="brand-text">CENTLE <span>Hack Portal</span></div>
+      <div class="brand-text">SummerSaaS <span>Hack Portal</span></div>
     </div>
     <div class="login-card">
       <h1>Welcome back.</h1>
@@ -40,6 +35,10 @@
       </div>
       <button id="login-btn" class="btn-primary" onclick="doLogin()">Sign In →</button>
     </div>
+    <div style="text-align:center; margin-top:2rem; display:flex; flex-direction:column; align-items:center; gap:0.5rem; opacity:0.8;">
+      <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700; letter-spacing:0.1em; text-transform:uppercase;">Powered By</span>
+      <img src="devcatalyst_transparent.png" class="devcat-logo invert-white" alt="DevCatalyst" style="height:40px; transform:scale(1.5);">
+    </div>
   </div>
 </div>
 
@@ -47,10 +46,7 @@
 <div id="page-participant" class="page">
   <nav class="navbar">
     <div class="nav-logo">
-      <img src="summersaas_logo.png" class="nav-brand-logo" alt="SummerSaaS">
-      <span class="nav-brand-x">X</span>
-      <img src="devcatalyst_transparent.png" class="nav-devcat-logo invert-white" alt="DevCatalyst">
-      <span class="nav-logo-text">CENTLE <span>Portal</span></span>
+      <span class="nav-logo-text">SummerSaaS <span>Portal</span></span>
     </div>
     <div class="nav-links">
       <button class="nav-link active" onclick="switchParticipantTab('qr',this)">My Pass</button>
@@ -146,10 +142,7 @@
 <div id="page-admin" class="page">
   <nav class="navbar">
     <div class="nav-logo">
-      <img src="summersaas_logo.png" class="nav-brand-logo" alt="SummerSaaS">
-      <span class="nav-brand-x">X</span>
-      <img src="devcatalyst_transparent.png" class="nav-devcat-logo invert-white" alt="DevCatalyst">
-      <span class="nav-logo-text">CENTLE <span>Admin</span></span>
+      <span class="nav-logo-text">SummerSaaS <span>Admin</span></span>
     </div>
     <div class="nav-links">
       <button class="nav-link active" onclick="switchAdminTab('overview',this)">Overview</button>
@@ -450,10 +443,7 @@
 <div id="page-jury" class="page">
   <nav class="navbar">
     <div class="nav-logo">
-      <img src="summersaas_logo.png" class="nav-brand-logo" alt="SummerSaaS">
-      <span class="nav-brand-x">X</span>
-      <img src="devcatalyst_transparent.png" class="nav-devcat-logo invert-white" alt="DevCatalyst">
-      <span class="nav-logo-text">CENTLE <span>Jury</span></span>
+      <span class="nav-logo-text">SummerSaaS <span>Jury</span></span>
     </div>
     <div class="nav-links">
       <button class="nav-link active" onclick="switchJuryTab('search',this)">Search Teams</button>
