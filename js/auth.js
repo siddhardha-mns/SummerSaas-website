@@ -99,21 +99,9 @@ function completeParticipantLogin(participant, user) {
   document.getElementById('p-username').textContent = user;
   renderParticipantAnnouncements();
   updateParticipantDashboard(participant);
-  updateParticipantStats();
 }
 
 function doLogout() {
   showPage('page-login');
 }
 
-// ─── UPDATE PARTICIPANT STATS ─────────────────────────
-function updateParticipantStats() {
-  const statVals = document.querySelectorAll('#ptab-qr .stat-val');
-  if (statVals.length >= 4) {
-    statVals[1].textContent = participants.length;
-
-    // Count unique teams
-    const teams = new Set(participants.map(p => p.team).filter(t => t && t !== '—'));
-    statVals[2].textContent = teams.size;
-  }
-}
