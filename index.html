@@ -21,6 +21,7 @@
       <div class="role-tabs">
         <button class="role-tab active" onclick="setRole('participant',this)">Participant</button>
         <button class="role-tab" onclick="setRole('admin',this)">Admin</button>
+        <button class="role-tab" onclick="setRole('jury',this)">Jury</button>
       </div>
       <div class="field">
         <label>Email / ID</label>
@@ -320,7 +321,7 @@
               </div>
               <div class="field" style="margin-bottom:0">
                 <label>Apps Script URL</label>
-                <input type="text" id="gsheet-apps-script-url" value="https://script.google.com/macros/s/AKfycbyJ62yFlR4DVKC1266QJYI4ta_hp0niv_yoMTAckkpGZucyW-CU2d_Cdfe11W3bQ6OP/exec" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;color:var(--text);font-family:var(--mono);font-size:.82rem;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+                <input type="text" id="gsheet-apps-script-url" value="https://script.google.com/macros/s/AKfycbxKnH7DtJItRhKOPCVOQ5hQf-SqNn3Lty1TfG4-656arls3pDJNB4PkUSb2rhizg3DJ/exec" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;color:var(--text);font-family:var(--mono);font-size:.82rem;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
               </div>
             </div>
           </div>
@@ -428,6 +429,102 @@
   </div>
 </div>
 
+<!-- ══════════════════════════════════════ JURY PAGE ══ -->
+<div id="page-jury" class="page">
+  <nav class="navbar">
+    <div class="nav-logo">⬡ HackPortal <span style="color:var(--accent);font-size:.75rem;margin-left:.4rem">JURY</span></div>
+    <div class="nav-links">
+      <button class="nav-link active" onclick="switchJuryTab('search',this)">Search Teams</button>
+      <button class="nav-link" onclick="switchJuryTab('evaluate',this)" style="display:none;" id="nav-eval-tab">Evaluate</button>
+    </div>
+    <div class="nav-right">
+      <span class="nav-user" id="j-username">jury1</span>
+      <button class="btn-logout" onclick="doLogout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- SEARCH TAB -->
+  <div id="jtab-search" class="main-content stagger">
+    <div class="page-title">Evaluate Teams</div>
+    <div class="page-sub">Search and select a team to begin evaluation.</div>
+    <div class="admin-grid jury-grid">
+      <div class="card full-card">
+        <input type="text" id="jury-search-input" placeholder="🔍 Search team name..."
+          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.8rem 1rem;color:var(--text);font-family:var(--mono);font-size:1rem;outline:none;transition:border-color .2s;margin-bottom:1.5rem;"
+          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"
+          oninput="handleJurySearch(event)"/>
+        
+        <div id="jury-team-results" style="display:flex; flex-direction:column; gap:1rem; max-height: 60vh; overflow-y: auto;">
+          <!-- Results injected by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EVALUATE TAB -->
+  <div id="jtab-evaluate" class="main-content stagger" style="display:none">
+    <div style="display:flex; align-items:center; gap: 1rem; margin-bottom: 1rem;">
+       <button class="btn-scan" onclick="closeEvaluation()" style="padding:.4rem .8rem; font-size:.8rem;">← Back</button>
+       <div>
+         <div class="page-title" id="jeval-team-name" style="margin-bottom:0;">Team Name</div>
+         <div style="color:var(--text-muted); font-family:var(--mono); font-size:.85rem;">
+           <span id="jeval-serial">#0</span> • <span id="jeval-team-id">TEAM-ID</span>
+         </div>
+       </div>
+    </div>
+    
+     <div class="admin-grid jury-grid">
+      <div class="card">
+         <div class="card-title"><span class="dot"></span> Team Details</div>
+         <div id="jeval-members" class="jury-summary-grid">
+            <!-- Summary injected by JS -->
+         </div>
+      </div>
+      
+      <div class="card">
+         <div class="card-title"><span class="dot" style="background:var(--accent2)"></span> Evaluation Form (1-10)</div>
+         <div style="display:flex; flex-direction:column; gap: 1rem;">
+            <div class="jury-rating-group" data-score-id="score-problemUnderstanding">
+              <div class="jury-rating-label">1. Problem Understanding</div>
+              <div class="jury-rating-buttons" id="score-problemUnderstanding-buttons"></div>
+            </div>
+            <div class="jury-rating-group" data-score-id="score-innovation">
+              <div class="jury-rating-label">2. Innovation &amp; Uniqueness</div>
+              <div class="jury-rating-buttons" id="score-innovation-buttons"></div>
+            </div>
+            <div class="jury-rating-group" data-score-id="score-impact">
+              <div class="jury-rating-label">3. Real World Impact</div>
+              <div class="jury-rating-buttons" id="score-impact-buttons"></div>
+            </div>
+            <div class="jury-rating-group" data-score-id="score-scalability">
+              <div class="jury-rating-label">4. Scalability / Startup Potentiality</div>
+              <div class="jury-rating-buttons" id="score-scalability-buttons"></div>
+            </div>
+            <div class="jury-rating-group" data-score-id="score-technicalDepth">
+              <div class="jury-rating-label">5. Technical Depth</div>
+              <div class="jury-rating-buttons" id="score-technicalDepth-buttons"></div>
+            </div>
+            <div class="jury-rating-group" data-score-id="score-traction">
+              <div class="jury-rating-label">6. User Traction &amp; Validation</div>
+              <div class="jury-rating-buttons" id="score-traction-buttons"></div>
+            </div>
+            <div class="jury-rating-group" data-score-id="score-presentation">
+              <div class="jury-rating-label">7. Presentation &amp; Communication</div>
+              <div class="jury-rating-buttons" id="score-presentation-buttons"></div>
+            </div>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 1rem; padding-top:1rem; border-top:1px solid var(--border);">
+               <div style="font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.1em;">Total Score</div>
+               <div style="font-size:2rem; font-weight:800; color:var(--accent3);" id="jury-total-score">0.00</div>
+            </div>
+            
+            <button class="btn-primary" onclick="submitJuryEvaluation()" style="margin-top:1rem; padding: 1rem; font-size:1.1rem;">Submit Evaluation</button>
+         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════════════════════════════ TOAST ══ -->
 <div id="toast"></div>
 
@@ -441,6 +538,7 @@
 <script src="js/import.js"></script>
 <script src="js/scanner.js"></script>
 <script src="js/exports.js"></script>
+<script src="js/jury.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

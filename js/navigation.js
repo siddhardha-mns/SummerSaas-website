@@ -26,3 +26,26 @@ function switchAdminTab(tab, el) {
   document.querySelectorAll('#page-admin .nav-link').forEach(l => l.classList.remove('active'));
   el.classList.add('active');
 }
+
+// ─── JURY TAB SWITCHING ───────────────────────────────
+function switchJuryTab(tab, el) {
+  ['search','evaluate'].forEach(t => {
+    document.getElementById('jtab-'+t).style.display = 'none';
+  });
+  document.getElementById('jtab-'+tab).style.display = 'flex';
+  document.getElementById('jtab-'+tab).style.flexDirection = 'column';
+  
+  if (el) {
+    document.querySelectorAll('#page-jury .nav-link').forEach(l => l.classList.remove('active'));
+    el.classList.add('active');
+  } else {
+    // If no element passed, just find the corresponding nav link and activate it
+    document.querySelectorAll('#page-jury .nav-link').forEach(l => {
+      if(l.getAttribute('onclick').includes(`'${tab}'`)) {
+        l.classList.add('active');
+      } else {
+        l.classList.remove('active');
+      }
+    });
+  }
+}
