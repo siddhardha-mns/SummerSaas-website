@@ -277,7 +277,6 @@ function generateTeamPrefix(teamName) {
 }
 
 function generateParticipantIds() {
-  // Group participants by team
   const teamCounters = {};
 
   participants.forEach(p => {
@@ -285,7 +284,10 @@ function generateParticipantIds() {
     if (!teamCounters[prefix]) teamCounters[prefix] = 0;
     teamCounters[prefix]++;
 
-    // Generate unique ID: TEAMPREFIX-MEMBER#-HASH
+    // ✅ If participant already has a Reg ID from the sheet, keep it — don't overwrite
+    if (p.id && p.id.trim() !== '') return;
+
+    // Only generate an ID if one doesn't exist
     const memberNum = String(teamCounters[prefix]).padStart(3, '0');
     const hash = hashCode(p.email || p.name).toString(16).substring(0, 4).toUpperCase();
     p.id = `${prefix}-${memberNum}-${hash}`;
@@ -342,18 +344,19 @@ function renderParticipantQR(participant) {
 function updateParticipantDashboard(participant) {
   if (!participant) return;
 
-  // Update participant info card
-  const nameEl = document.getElementById('p-name');
-  if (nameEl) nameEl.textContent = participant.name;
+  // Populate all read-only info fields from sheet data
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || '—'; };
 
-  // Update team display
-  const teamEls = document.querySelectorAll('#ptab-qr .card:nth-child(2) div[style*="font-weight:700"]');
-  if (teamEls[1]) teamEls[1].textContent = participant.team;
+  set('p-name',    participant.name);
+  set('p-email',   participant.email);
+  set('p-phone',   participant.phone);
+  set('p-college', participant.college);
+  set('p-team',    participant.team);
+  set('p-role',    participant.role);
 
-  // Update track badge
-  const trackContainer = document.querySelector('#ptab-qr .card:nth-child(2) .badge-purple');
-  if (trackContainer) trackContainer.textContent = `🎯 ${participant.track}`;
+  const trackEl = document.getElementById('p-track');
+  if (trackEl) trackEl.textContent = participant.track || '—';
 
-  // Render the QR code
+  // Render the QR code with the sheet's Reg ID
   renderParticipantQR(participant);
 }

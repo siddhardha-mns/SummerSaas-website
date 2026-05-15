@@ -10,10 +10,14 @@ function renderParticipantsTable() {
     tbody.innerHTML += `
       <tr>
         <td style="color:var(--text-muted)">${i+1}</td>
+        <td style="font-family:var(--mono);font-size:.78rem;color:var(--accent)">${p.id || '—'}</td>
         <td style="font-weight:700;font-family:var(--sans)">${p.name}</td>
         <td>${p.email}</td>
+        <td>${p.phone || '—'}</td>
+        <td>${p.college || '—'}</td>
         <td>${p.team}</td>
         <td>${p.track}</td>
+        <td>${p.role || '—'}</td>
         <td>${badge}</td>
         <td style="color:var(--text-muted)">${p.time}</td>
       </tr>`;

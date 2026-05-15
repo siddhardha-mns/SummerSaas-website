@@ -23,11 +23,11 @@
       </div>
       <div class="field">
         <label>Email / ID</label>
-        <input type="text" id="login-user" placeholder="hacker@email.com" value="alice@hackathon.io"/>
+        <input type="text" id="login-user" placeholder="your-registered@email.com" value=""/>
       </div>
-      <div class="field">
+      <div class="field" id="password-field" style="display:none">
         <label>Password</label>
-        <input type="password" id="login-pass" placeholder="••••••••" value="password123"/>
+        <input type="password" id="login-pass" placeholder="••••••••" value=""/>
       </div>
       <button class="btn-primary" onclick="doLogin()">Sign In →</button>
     </div>
@@ -56,9 +56,9 @@
 
     <div class="stat-row">
       <div class="stat-card"><div class="stat-val">36</div><div class="stat-label">Hours Left</div></div>
-      <div class="stat-card"><div class="stat-val">142</div><div class="stat-label">Participants</div></div>
-      <div class="stat-card"><div class="stat-val">12</div><div class="stat-label">Projects</div></div>
-      <div class="stat-card"><div class="stat-val">8</div><div class="stat-label">Mentors</div></div>
+      <div class="stat-card"><div class="stat-val">0</div><div class="stat-label">Participants</div></div>
+      <div class="stat-card"><div class="stat-val">0</div><div class="stat-label">Projects</div></div>
+      <div class="stat-card"><div class="stat-val">0</div><div class="stat-label">Mentors</div></div>
     </div>
 
     <div class="p-dash-grid">
@@ -76,26 +76,34 @@
 
       <div class="card">
         <div class="card-title"><span class="dot" style="background:var(--accent3)"></span> Participant Info</div>
-        <div style="display:flex;flex-direction:column;gap:.9rem">
+        <div style="display:flex;flex-direction:column;gap:.9rem" id="p-info-card">
           <div>
             <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">Name</div>
-            <div style="font-weight:700" id="p-name">Alice Johnson</div>
+            <div style="font-weight:700" id="p-name">—</div>
+          </div>
+          <div>
+            <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">Email</div>
+            <div style="font-family:var(--mono);font-size:.85rem" id="p-email">—</div>
+          </div>
+          <div>
+            <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">Phone</div>
+            <div style="font-weight:700" id="p-phone">—</div>
+          </div>
+          <div>
+            <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">College</div>
+            <div style="font-weight:700" id="p-college">—</div>
           </div>
           <div>
             <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">Team</div>
-            <div style="font-weight:700">Neural Ninjas 🥷</div>
+            <div style="font-weight:700" id="p-team">—</div>
           </div>
           <div>
             <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">Track</div>
-            <div><span class="badge badge-purple">🤖 AI / ML</span></div>
+            <div><span class="badge badge-purple" id="p-track">—</span></div>
           </div>
           <div>
-            <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">T-Shirt Size</div>
-            <div style="font-weight:700">Large</div>
-          </div>
-          <div>
-            <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">Dietary Preference</div>
-            <div style="font-weight:700">Vegetarian</div>
+            <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">Role</div>
+            <div style="font-weight:700" id="p-role">—</div>
           </div>
           <div>
             <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">Check-in Status</div>
@@ -119,77 +127,9 @@
   <div id="ptab-schedule" class="main-content stagger" style="display:none">
     <div class="page-title">Event Schedule</div>
     <div class="page-sub">HackPortal 2025 — 36-hour hackathon timeline.</div>
-    <div class="p-dash-grid">
-      <div class="card">
-        <div class="card-title"><span class="dot"></span> Day 1 — Saturday</div>
-        <div class="timeline">
-          <div class="tl-item past">
-            <div class="tl-time">09:00</div>
-            <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
-            <div class="tl-text"><div class="tl-event">Registrations Open</div><div class="tl-loc">📍 Main Lobby</div></div>
-          </div>
-          <div class="tl-item past">
-            <div class="tl-time">10:30</div>
-            <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
-            <div class="tl-text"><div class="tl-event">Opening Ceremony</div><div class="tl-loc">📍 Auditorium</div></div>
-          </div>
-          <div class="tl-item active">
-            <div class="tl-time">11:00</div>
-            <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
-            <div class="tl-text"><div class="tl-event">Hacking Begins 🚀</div><div class="tl-loc">📍 All Floors</div></div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-time">13:00</div>
-            <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
-            <div class="tl-text"><div class="tl-event">Lunch Break</div><div class="tl-loc">📍 Cafeteria</div></div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-time">15:00</div>
-            <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
-            <div class="tl-text"><div class="tl-event">Mentor Office Hours</div><div class="tl-loc">📍 Rooms 201–206</div></div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-time">20:00</div>
-            <div class="tl-dot-col"><div class="tl-dot"></div></div>
-            <div class="tl-text"><div class="tl-event">Dinner + Networking</div><div class="tl-loc">📍 Terrace</div></div>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-title"><span class="dot" style="background:var(--accent2)"></span> Day 2 — Sunday</div>
-        <div class="timeline">
-          <div class="tl-item">
-            <div class="tl-time">08:00</div>
-            <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
-            <div class="tl-text"><div class="tl-event">Breakfast</div><div class="tl-loc">📍 Cafeteria</div></div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-time">10:00</div>
-            <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
-            <div class="tl-text"><div class="tl-event">Final Hour Warning</div><div class="tl-loc">📍 Announcement</div></div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-time">11:00</div>
-            <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
-            <div class="tl-text"><div class="tl-event">Submission Deadline ⏰</div><div class="tl-loc">📍 Devpost</div></div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-time">12:00</div>
-            <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
-            <div class="tl-text"><div class="tl-event">Project Demos</div><div class="tl-loc">📍 Hall B</div></div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-time">15:00</div>
-            <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-line"></div></div>
-            <div class="tl-text"><div class="tl-event">Judging</div><div class="tl-loc">📍 Hall B</div></div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-time">17:00</div>
-            <div class="tl-dot-col"><div class="tl-dot"></div></div>
-            <div class="tl-text"><div class="tl-event">Awards Ceremony 🏆</div><div class="tl-loc">📍 Auditorium</div></div>
-          </div>
-        </div>
-      </div>
+    <div class="empty-state">
+      <div class="empty-icon">⏳</div>
+      <div>To be updated...</div>
     </div>
   </div>
 </div>
@@ -216,11 +156,11 @@
     <div class="page-title">Command Center</div>
     <div class="page-sub">Real-time overview of HackPortal 2025.</div>
     <div class="stat-row">
-      <div class="stat-card"><div class="stat-val" style="color:var(--accent)">142</div><div class="stat-label">Registered</div></div>
-      <div class="stat-card"><div class="stat-val" style="color:var(--accent3)">97</div><div class="stat-label">Checked In</div></div>
-      <div class="stat-card"><div class="stat-val" style="color:var(--accent2)">45</div><div class="stat-label">Pending</div></div>
-      <div class="stat-card"><div class="stat-val">12</div><div class="stat-label">Teams</div></div>
-      <div class="stat-card"><div class="stat-val">6</div><div class="stat-label">Announcements</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--accent)">0</div><div class="stat-label">Registered</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--accent3)">0</div><div class="stat-label">Checked In</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--accent2)">0</div><div class="stat-label">Pending</div></div>
+      <div class="stat-card"><div class="stat-val" id="admin-teams-count">0</div><div class="stat-label">Teams</div></div>
+      <div class="stat-card"><div class="stat-val" id="admin-ann-count">0</div><div class="stat-label">Announcements</div></div>
     </div>
     <div class="admin-grid">
       <div class="card">
@@ -234,52 +174,14 @@
             <div style="background:linear-gradient(90deg,var(--accent),var(--accent3));width:68%;height:100%;border-radius:100px;transition:width .6s ease"></div>
           </div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:.5rem">
-          <div style="display:flex;justify-content:space-between;font-size:.85rem;padding:.5rem;background:var(--surface2);border-radius:8px">
-            <span>🤖 AI / ML Track</span><span style="font-weight:700">34 checked in</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:.85rem;padding:.5rem;background:var(--surface2);border-radius:8px">
-            <span>🌐 Web3 Track</span><span style="font-weight:700">28 checked in</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:.85rem;padding:.5rem;background:var(--surface2);border-radius:8px">
-            <span>🛡️ CyberSec Track</span><span style="font-weight:700">19 checked in</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:.85rem;padding:.5rem;background:var(--surface2);border-radius:8px">
-            <span>📱 Mobile Track</span><span style="font-weight:700">16 checked in</span>
-          </div>
+        <div style="display:flex;flex-direction:column;gap:.5rem" id="track-stats-container">
+          <!-- Populated dynamically -->
         </div>
       </div>
       <div class="card">
         <div class="card-title"><span class="dot" style="background:var(--accent2)"></span> Recent Activity</div>
         <div style="display:flex;flex-direction:column;gap:.6rem" id="activity-log">
-          <div style="display:flex;align-items:center;gap:.75rem;padding:.5rem;background:var(--surface2);border-radius:8px">
-            <span>✅</span>
-            <div>
-              <div style="font-size:.85rem;font-weight:700">Riya Patel checked in</div>
-              <div style="font-size:.75rem;color:var(--text-muted);font-family:var(--mono)">2 minutes ago</div>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;gap:.75rem;padding:.5rem;background:var(--surface2);border-radius:8px">
-            <span>📢</span>
-            <div>
-              <div style="font-size:.85rem;font-weight:700">Announcement sent</div>
-              <div style="font-size:.75rem;color:var(--text-muted);font-family:var(--mono)">15 minutes ago</div>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;gap:.75rem;padding:.5rem;background:var(--surface2);border-radius:8px">
-            <span>✅</span>
-            <div>
-              <div style="font-size:.85rem;font-weight:700">Arjun Kumar checked in</div>
-              <div style="font-size:.75rem;color:var(--text-muted);font-family:var(--mono)">22 minutes ago</div>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;gap:.75rem;padding:.5rem;background:var(--surface2);border-radius:8px">
-            <span>✅</span>
-            <div>
-              <div style="font-size:.85rem;font-weight:700">Shreya Nair checked in</div>
-              <div style="font-size:.75rem;color:var(--text-muted);font-family:var(--mono)">34 minutes ago</div>
-            </div>
-          </div>
+          <div style="padding:1rem;text-align:center;color:var(--text-muted);font-size:.85rem">No recent activity</div>
         </div>
       </div>
     </div>
@@ -316,26 +218,15 @@
         <div class="card-title"><span class="dot" style="background:var(--accent3)"></span> Manual Lookup</div>
         <div style="display:flex;flex-direction:column;gap:1rem">
           <div class="field">
-            <label>Participant ID or Email</label>
-            <input type="text" class="field-input" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;color:var(--text);font-family:var(--mono);font-size:.9rem;outline:none;" placeholder="HACK-2025-XXXX or email" oninput="this.style.borderColor=this.value?'var(--accent)':'var(--border)'"/>
+            <label>Participant Reg ID</label>
+            <input type="text" id="manual-lookup-input" class="field-input" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;color:var(--text);font-family:var(--mono);font-size:.9rem;outline:none;" placeholder="Scan barcode or type Reg ID..." onkeydown="if(event.key==='Enter') manualLookup()"/>
           </div>
-          <button class="btn-scan" style="width:fit-content">🔍 Lookup & Check In</button>
+          <button class="btn-scan" onclick="manualLookup()" style="width:fit-content">🔍 Check In</button>
         </div>
         <div style="margin-top:1.5rem">
           <div class="card-title"><span class="dot" style="background:var(--accent3)"></span> Recent Check-ins</div>
           <div style="display:flex;flex-direction:column;gap:.5rem" id="recent-checkins">
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem .8rem;background:var(--surface2);border-radius:8px">
-              <div><div style="font-size:.85rem;font-weight:700">Riya Patel</div><div style="font-size:.72rem;color:var(--text-muted);font-family:var(--mono)">HACK-2025-0031</div></div>
-              <span class="badge badge-green">✓ In</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem .8rem;background:var(--surface2);border-radius:8px">
-              <div><div style="font-size:.85rem;font-weight:700">Arjun Kumar</div><div style="font-size:.72rem;color:var(--text-muted);font-family:var(--mono)">HACK-2025-0028</div></div>
-              <span class="badge badge-green">✓ In</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem .8rem;background:var(--surface2);border-radius:8px">
-              <div><div style="font-size:.85rem;font-weight:700">Shreya Nair</div><div style="font-size:.72rem;color:var(--text-muted);font-family:var(--mono)">HACK-2025-0019</div></div>
-              <span class="badge badge-green">✓ In</span>
-            </div>
+            <div style="padding:1rem;text-align:center;color:var(--text-muted);font-size:.85rem">No recent check-ins</div>
           </div>
         </div>
       </div>
@@ -423,15 +314,39 @@
       <div class="card">
         <div class="card-title"><span class="dot" style="background:var(--accent3)"></span> Import from Google Sheets</div>
         <div style="display:flex;flex-direction:column;gap:1rem">
-          <div style="padding:1rem;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
-            <div style="font-size:.82rem;color:var(--text-muted);line-height:1.6;margin-bottom:.75rem">
-              Paste the URL of a <strong style="color:var(--text)">published</strong> Google Sheet. The sheet must be shared as "Anyone with the link" and published to web as CSV.
-            </div>
-            <div class="field" style="margin-bottom:0">
-              <label>Google Sheet URL</label>
-              <input type="text" id="gsheet-url-input" placeholder="https://docs.google.com/spreadsheets/d/…/edit" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;color:var(--text);font-family:var(--mono);font-size:.82rem;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+          <!-- Mode Toggle -->
+          <div class="pill-tabs" id="gsheet-mode-tabs">
+            <button class="pill-tab active" onclick="setGSheetMode('apps-script',this)">Apps Script API</button>
+            <button class="pill-tab" onclick="setGSheetMode('direct',this)">Direct Sheet URL</button>
+          </div>
+
+          <!-- Apps Script Mode -->
+          <div id="gsheet-mode-apps-script">
+            <div style="padding:1rem;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+              <div style="font-size:.82rem;color:var(--text-muted);line-height:1.6;margin-bottom:.75rem">
+                Paste your <strong style="color:var(--text)">Apps Script Web App URL</strong>. Deploy from your Sheet via
+                <span style="color:var(--accent);font-family:var(--mono);font-size:.78rem">Extensions → Apps Script</span>.
+              </div>
+              <div class="field" style="margin-bottom:0">
+                <label>Apps Script URL</label>
+                <input type="text" id="gsheet-apps-script-url" value="https://script.google.com/macros/s/AKfycbyJ62yFlR4DVKC1266QJYI4ta_hp0niv_yoMTAckkpGZucyW-CU2d_Cdfe11W3bQ6OP/exec" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;color:var(--text);font-family:var(--mono);font-size:.82rem;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+              </div>
             </div>
           </div>
+
+          <!-- Direct URL Mode (hidden by default) -->
+          <div id="gsheet-mode-direct" style="display:none">
+            <div style="padding:1rem;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+              <div style="font-size:.82rem;color:var(--text-muted);line-height:1.6;margin-bottom:.75rem">
+                Paste a <strong style="color:var(--text)">public</strong> Google Sheet URL. The sheet must be shared as "Anyone with the link".
+              </div>
+              <div class="field" style="margin-bottom:0">
+                <label>Google Sheet URL</label>
+                <input type="text" id="gsheet-url-input" placeholder="https://docs.google.com/spreadsheets/d/…/edit" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;color:var(--text);font-family:var(--mono);font-size:.82rem;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+              </div>
+            </div>
+          </div>
+
           <button class="btn-scan" onclick="fetchGoogleSheet()" id="gsheet-fetch-btn" style="width:fit-content;align-self:flex-start">
             🔗 Fetch Participants
           </button>
@@ -457,7 +372,7 @@
         <table class="participants-table" id="participants-table">
           <thead>
             <tr>
-              <th>#</th><th>Name</th><th>Email</th><th>Team</th><th>Track</th><th>Status</th><th>Check-in Time</th>
+              <th>#</th><th>Reg ID</th><th>Name</th><th>Email</th><th>Phone</th><th>College</th><th>Team</th><th>Track</th><th>Role</th><th>Status</th><th>Check-in</th>
             </tr>
           </thead>
           <tbody id="participants-tbody">

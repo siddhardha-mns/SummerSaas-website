@@ -1,22 +1,38 @@
 // ─── CSV / GOOGLE SHEETS IMPORT ───────────────────────
 
 let _pendingCSVData = [];
+let _gsheetMode = 'apps-script'; // 'apps-script' or 'direct'
+let _appsScriptUrl = 'https://script.google.com/macros/s/AKfycbyJ62yFlR4DVKC1266QJYI4ta_hp0niv_yoMTAckkpGZucyW-CU2d_Cdfe11W3bQ6OP/exec';
+
+// ─── MODE TOGGLE ──────────────────────────────────────
+function setGSheetMode(mode, el) {
+  _gsheetMode = mode;
+  document.getElementById('gsheet-mode-apps-script').style.display = mode === 'apps-script' ? 'block' : 'none';
+  document.getElementById('gsheet-mode-direct').style.display = mode === 'direct' ? 'block' : 'none';
+  document.querySelectorAll('#gsheet-mode-tabs .pill-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
 
 // ─── CSV PARSING ──────────────────────────────────────
+// Adapted for sheet columns: S.No, Reg ID, Name, Email, Phone, College, Team Name, Selected Track, Role
 function parseCSV(text) {
   const lines = text.split(/\r?\n/).filter(l => l.trim());
   if (lines.length < 2) return [];
 
-  // Parse header to detect column mapping
-  const header = parseCSVLine(lines[0]).map(h => h.trim().toLowerCase());
+  // Parse header to detect column mapping (case-insensitive)
+  const header = parseCSVLine(lines[0]).map(h => h.trim().toLowerCase().replace(/\s+/g, ' '));
   const colMap = {
-    id:     findCol(header, ['id', 'participant_id', 'participantid', 'hack_id']),
-    name:   findCol(header, ['name', 'full_name', 'fullname', 'participant']),
-    email:  findCol(header, ['email', 'e-mail', 'mail', 'email_address']),
-    team:   findCol(header, ['team', 'team_name', 'teamname', 'group']),
-    track:  findCol(header, ['track', 'category', 'theme']),
-    status: findCol(header, ['status', 'checkin', 'check_in', 'checked_in']),
-    time:   findCol(header, ['time', 'checkin_time', 'check_in_time', 'timestamp']),
+    sno:     findCol(header, ['s.no', 'sno', 's. no', '#', 'serial', 'sl.no']),
+    id:      findCol(header, ['reg id', 'regid', 'reg_id', 'id', 'participant_id', 'participantid', 'hack_id', 'registration id']),
+    name:    findCol(header, ['name', 'full_name', 'fullname', 'participant', 'full name']),
+    email:   findCol(header, ['email', 'e-mail', 'mail', 'email_address', 'email id']),
+    phone:   findCol(header, ['phone', 'phone number', 'mobile', 'contact', 'phone no', 'contact number']),
+    college: findCol(header, ['college', 'institution', 'university', 'college name', 'institute']),
+    team:    findCol(header, ['team name', 'team', 'team_name', 'teamname', 'group']),
+    track:   findCol(header, ['selected track', 'track', 'category', 'theme', 'domain']),
+    role:    findCol(header, ['role', 'position', 'member role', 'team role']),
+    status:  findCol(header, ['status', 'checkin', 'check_in', 'checked_in', 'check-in']),
+    time:    findCol(header, ['time', 'checkin_time', 'check_in_time', 'timestamp', 'check-in time']),
   };
 
   const rows = [];
@@ -24,17 +40,23 @@ function parseCSV(text) {
     const cols = parseCSVLine(lines[i]);
     if (cols.length < 2) continue;
 
+    const name = getCol(cols, colMap.name);
+    if (!name) continue; // skip empty rows
+
     const statusRaw = (getCol(cols, colMap.status) || '').toLowerCase();
     const status = ['checkedin','checked_in','checked in','yes','true','1','done'].includes(statusRaw) ? 'checkedin' : 'pending';
 
     rows.push({
-      id:     getCol(cols, colMap.id)    || `HACK-IMP-${String(i).padStart(4,'0')}`,
-      name:   getCol(cols, colMap.name)  || `Participant ${i}`,
-      email:  getCol(cols, colMap.email) || '',
-      team:   getCol(cols, colMap.team)  || '—',
-      track:  getCol(cols, colMap.track) || '—',
-      status: status,
-      time:   status === 'checkedin' ? (getCol(cols, colMap.time) || new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})) : '—',
+      id:      getCol(cols, colMap.id) || '',
+      name:    name,
+      email:   getCol(cols, colMap.email) || '',
+      phone:   getCol(cols, colMap.phone) || '',
+      college: getCol(cols, colMap.college) || '',
+      team:    getCol(cols, colMap.team) || '—',
+      track:   getCol(cols, colMap.track) || '—',
+      role:    getCol(cols, colMap.role) || '',
+      status:  status,
+      time:    status === 'checkedin' ? (getCol(cols, colMap.time) || new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})) : '—',
     });
   }
   return rows;
@@ -111,6 +133,7 @@ function confirmCSVImport() {
   participants = _pendingCSVData;
   _pendingCSVData = [];
   generateParticipantIds();
+  saveData();
   renderParticipantsTable();
   updateOverviewStats();
   document.getElementById('csv-preview').style.display = 'none';
@@ -141,25 +164,82 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ─── GOOGLE SHEETS FETCH ──────────────────────────────
 function fetchGoogleSheet() {
+  if (_gsheetMode === 'apps-script') {
+    fetchViaAppsScript();
+  } else {
+    fetchViaDirectURL();
+  }
+}
+
+// ─── MODE 1: Apps Script Web App ──────────────────────
+function fetchViaAppsScript() {
+  // Use hardcoded URL; also check input field in case user updated it
+  const inputEl = document.getElementById('gsheet-apps-script-url');
+  const url = (inputEl && inputEl.value.trim()) || _appsScriptUrl;
+
+  if (!url) { showToast('⚠️ No Apps Script URL configured'); return; }
+
+  _appsScriptUrl = url; // Keep in sync
+  const fetchUrl = url + (url.includes('?') ? '&' : '?') + 'action=getParticipants';
+
+  setGSheetStatus('loading', '<span class="spinner"></span> Fetching from Google Sheets…');
+
+  fetch(fetchUrl)
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    })
+    .then(data => {
+      if (data.error) throw new Error(data.error);
+
+      const rows = data.participants || [];
+      if (rows.length === 0) {
+        setGSheetStatus('error', '⚠️ No participants found in sheet.');
+        return;
+      }
+
+      participants = rows.map(r => ({
+        id:      r.id || r.regId || '',
+        name:    r.name || '',
+        email:   r.email || '',
+        phone:   r.phone || '',
+        college: r.college || '',
+        team:    r.team || r.teamName || '—',
+        track:   r.track || r.selectedTrack || '—',
+        role:    r.role || '',
+        status:  r.status || 'pending',
+        time:    r.time || '—',
+      }));
+
+      generateParticipantIds();
+      saveData();
+      renderParticipantsTable();
+      updateOverviewStats();
+      setGSheetStatus('success', `✅ Synced ${participants.length} participants from Google Sheets!`);
+      showToast(`✅ ${participants.length} participants loaded`);
+    })
+    .catch(err => {
+      setGSheetStatus('error', `❌ Failed: ${err.message}`);
+      showToast(`⚠️ Sheet sync failed: ${err.message}`);
+    });
+}
+
+// ─── MODE 2: Direct Sheet URL (CSV export) ────────────
+function fetchViaDirectURL() {
   const urlInput = document.getElementById('gsheet-url-input');
-  const statusEl = document.getElementById('gsheet-status');
   const rawUrl = urlInput.value.trim();
 
   if (!rawUrl) { showToast('⚠️ Please enter a Google Sheet URL'); return; }
 
-  // Extract sheet ID from URL
   const match = rawUrl.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
   if (!match) {
-    setGSheetStatus('error', '❌ Invalid Google Sheets URL. Expected format: docs.google.com/spreadsheets/d/...');
+    setGSheetStatus('error', '❌ Invalid Google Sheets URL. Expected: docs.google.com/spreadsheets/d/...');
     return;
   }
 
   const sheetId = match[1];
-
-  // Extract gid if present, default to 0
   const gidMatch = rawUrl.match(/gid=(\d+)/);
   const gid = gidMatch ? gidMatch[1] : '0';
-
   const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=${gid}`;
 
   setGSheetStatus('loading', '<span class="spinner"></span> Fetching data from Google Sheets…');
@@ -177,6 +257,7 @@ function fetchGoogleSheet() {
       }
       participants = parsed;
       generateParticipantIds();
+      saveData();
       renderParticipantsTable();
       updateOverviewStats();
       setGSheetStatus('success', `✅ Imported ${parsed.length} participants with team-based IDs!`);
@@ -184,6 +265,28 @@ function fetchGoogleSheet() {
     })
     .catch(err => {
       setGSheetStatus('error', `❌ Failed to fetch: ${err.message}`);
+    });
+}
+
+// ─── SYNC CHECK-IN BACK TO SHEET ──────────────────────
+function syncCheckinToSheet(email, status, time) {
+  if (!_appsScriptUrl) return; // No Apps Script URL configured
+
+  const url = _appsScriptUrl +
+    `?action=updateStatus&email=${encodeURIComponent(email)}` +
+    `&status=${encodeURIComponent(status || 'checkedin')}` +
+    `&time=${encodeURIComponent(time || '')}`;
+
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        console.log(`✅ Synced check-in for ${email} to Google Sheet`);
+      }
+    })
+    .catch(() => {
+      // Silent fail — sheet sync is best-effort
+      console.warn(`⚠️ Could not sync check-in for ${email}`);
     });
 }
 
@@ -199,7 +302,6 @@ function setGSheetStatus(type, html) {
 
 // ─── UPDATE OVERVIEW STATS ────────────────────────────
 function updateOverviewStats() {
-  // Update the overview tab stat cards if they exist
   const statCards = document.querySelectorAll('#atab-overview .stat-val');
   if (statCards.length >= 3) {
     const total = participants.length;
@@ -208,5 +310,39 @@ function updateOverviewStats() {
     statCards[0].textContent = total;
     statCards[1].textContent = checkedIn;
     statCards[2].textContent = pending;
+
+    // Update Teams count
+    const teams = new Set(participants.map(p => p.team).filter(t => t && t !== '—'));
+    const teamsEl = document.getElementById('admin-teams-count');
+    if (teamsEl) teamsEl.textContent = teams.size;
+
+    // Update progress bar
+    const progressText = document.querySelector('#atab-overview .card > div > div > span:last-child');
+    const progressBar = document.querySelector('#atab-overview .card > div > div:nth-child(2) > div');
+    const pct = total === 0 ? 0 : Math.round((checkedIn / total) * 100);
+    if (progressText) {
+      progressText.textContent = `${pct}%`;
+      progressText.previousElementSibling.textContent = `${checkedIn} / ${total} checked in`;
+    }
+    if (progressBar) progressBar.style.width = `${pct}%`;
+
+    // Update track stats
+    const tracks = {};
+    participants.forEach(p => {
+      const tr = p.track || 'Unassigned';
+      if (!tracks[tr]) tracks[tr] = 0;
+      if (p.status === 'checkedin') tracks[tr]++;
+    });
+
+    const trackContainer = document.getElementById('track-stats-container');
+    if (trackContainer) {
+      trackContainer.innerHTML = '';
+      Object.entries(tracks).forEach(([track, count]) => {
+        trackContainer.innerHTML += `
+          <div style="display:flex;justify-content:space-between;font-size:.85rem;padding:.5rem;background:var(--surface2);border-radius:8px">
+            <span>🎯 ${track}</span><span style="font-weight:700">${count} checked in</span>
+          </div>`;
+      });
+    }
   }
 }

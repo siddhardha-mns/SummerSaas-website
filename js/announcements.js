@@ -19,7 +19,11 @@ function renderAnnouncements(listId) {
 }
 
 function renderParticipantAnnouncements() { renderAnnouncements('participant-ann-list'); }
-function renderAdminAnnouncements() { renderAnnouncements('admin-ann-list'); }
+function renderAdminAnnouncements() {
+  renderAnnouncements('admin-ann-list');
+  const countEl = document.getElementById('admin-ann-count');
+  if (countEl) countEl.textContent = announcements.length;
+}
 
 // ─── SEND ANNOUNCEMENT ───────────────────────────────
 function sendAnnouncement() {
@@ -33,6 +37,7 @@ function sendAnnouncement() {
   const time = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
 
   announcements.push({ id: Date.now(), title, body, priority, time, icon: icons[priority] });
+  saveAnnouncements();
   renderAdminAnnouncements();
 
   document.getElementById('ann-title-input').value = '';

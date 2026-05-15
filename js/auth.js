@@ -3,54 +3,59 @@ function setRole(role, el) {
   currentRole = role;
   document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
+
+  // Show password only for admin
+  const userEl = document.getElementById('login-user');
+  const passField = document.getElementById('password-field');
+  if (role === 'admin') {
+    userEl.placeholder = 'admin';
+    userEl.value = 'admin';
+    passField.style.display = 'block';
+    document.getElementById('login-pass').value = '';
+  } else {
+    userEl.placeholder = 'your-registered@email.com';
+    userEl.value = '';
+    passField.style.display = 'none';
+  }
 }
 
 // ─── LOGIN ────────────────────────────────────────────
 function doLogin() {
-  const user = document.getElementById('login-user').value;
-  if (!user) { showToast('Please enter your email'); return; }
+  const user = document.getElementById('login-user').value.trim();
+  if (!user) { showToast('Please enter your email or ID'); return; }
 
-  // Ensure all participants have team-based IDs
-  generateParticipantIds();
-
-  showPage(currentRole === 'admin' ? 'page-admin' : 'page-participant');
-
-  if (currentRole === 'participant') {
-    document.getElementById('p-username').textContent = user;
-    renderParticipantAnnouncements();
-
-    // Find the participant by email and render their unique QR
-    const participant = participants.find(p =>
-      p.email.toLowerCase() === user.toLowerCase() ||
-      p.name.toLowerCase() === user.toLowerCase()
-    );
-
-    if (participant) {
-      updateParticipantDashboard(participant);
+  // ADMIN CHECK — requires password
+  if (currentRole === 'admin') {
+    const pass = (document.getElementById('login-pass') || {}).value || '';
+    if (user === 'admin' && pass === 'summer2026') {
+      showPage('page-admin');
+      renderAdminAnnouncements();
+      renderParticipantsTable();
+      showToast('Welcome, Administrator');
+      if (typeof fetchViaAppsScript === 'function') fetchViaAppsScript();
+      return;
     } else {
-      // Create a guest entry if not found
-      const guest = {
-        id: '',
-        name: user.split('@')[0],
-        email: user,
-        team: 'Unassigned',
-        track: '—',
-        status: 'pending',
-        time: '—'
-      };
-      participants.push(guest);
-      generateParticipantIds();
-      // Re-find to get the generated ID
-      const guestWithId = participants.find(p => p.email === user);
-      updateParticipantDashboard(guestWithId || guest);
+      showToast('❌ Invalid Admin Credentials');
+      return;
     }
-
-    // Update participant stats
-    updateParticipantStats();
-  } else {
-    renderAdminAnnouncements();
-    renderParticipantsTable();
   }
+
+  // PARTICIPANT LOGIN FLOW — email must exist in sheet data
+  const participant = participants.find(p =>
+    p.email.toLowerCase() === user.toLowerCase()
+  );
+
+  if (!participant) {
+    showToast('❌ Email not found. Please use the email you registered with.');
+    return;
+  }
+
+  generateParticipantIds();
+  showPage('page-participant');
+  document.getElementById('p-username').textContent = user;
+  renderParticipantAnnouncements();
+  updateParticipantDashboard(participant);
+  updateParticipantStats();
 }
 
 function doLogout() {
