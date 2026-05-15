@@ -47,10 +47,28 @@ function doLogin() {
     completeParticipantLogin(participant, user);
   } else {
     // If not found locally, try fetching from Apps Script directly
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+      loginBtn.innerHTML = '<span class="spinner" style="border-color:#fff;border-top-color:transparent;width:14px;height:14px;margin-right:.5rem;vertical-align:middle;margin-top:-2px"></span>Logging in...';
+      loginBtn.disabled = true;
+      loginBtn.style.opacity = '0.7';
+      loginBtn.style.cursor = 'not-allowed';
+    }
+
+    const restoreBtn = () => {
+      if (loginBtn) {
+        loginBtn.innerHTML = 'Sign In →';
+        loginBtn.disabled = false;
+        loginBtn.style.opacity = '1';
+        loginBtn.style.cursor = 'pointer';
+      }
+    };
+
     showToast('⏳ Looking up participant...');
     const url = typeof _appsScriptUrl !== 'undefined' ? _appsScriptUrl : '';
     if (!url) {
       showToast('❌ Email not found locally and no Apps Script URL configured.');
+      restoreBtn();
       return;
     }
     
@@ -89,6 +107,9 @@ function doLogin() {
       })
       .catch(err => {
         showToast('⚠️ Could not connect to Google Sheets: ' + err.message);
+      })
+      .finally(() => {
+        restoreBtn();
       });
   }
 }
