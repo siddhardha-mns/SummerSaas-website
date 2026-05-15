@@ -6,8 +6,10 @@ let juryFetchInFlight = null;
 let juryLastQuery = '';
 let jurySubmitInFlight = false;
 
-const JURY_FETCH_API_URL = 'https://script.google.com/macros/s/AKfycbyJ62yFlR4DVKC1266QJYI4ta_hp0niv_yoMTAckkpGZucyW-CU2d_Cdfe11W3bQ6OP/exec';
-const JURY_SUBMIT_API_URL = 'https://script.google.com/macros/s/AKfycbxKnH7DtJItRhKOPCVOQ5hQf-SqNn3Lty1TfG4-656arls3pDJNB4PkUSb2rhizg3DJ/exec';
+// Use the same Apps Script URL as defined in import.js for consistency
+function getJuryApiUrl() {
+  return typeof _appsScriptUrl !== 'undefined' ? _appsScriptUrl : '';
+}
 
 const JURY_SCORE_FIELDS = [
   { id: 'score-problemUnderstanding', key: 'problemUnderstanding' },
@@ -109,9 +111,13 @@ function buildJuryTeamsFromLocalParticipants() {
 }
 
 function loadJuryTeams(force = false) {
-  if (juryFetchInFlight && !force) return juryFetchInFlight;
+  const url = getJuryApiUrl();
+  if (!url) {
+    showToast('⚠️ Apps Script URL not configured.');
+    return Promise.reject('No URL');
+  }
 
-  const fetchUrl = JURY_FETCH_API_URL + '?action=getParticipants';
+  const fetchUrl = url + (url.includes('?') ? '&' : '?') + 'action=getParticipants';
   juryFetchInFlight = fetch(fetchUrl)
     .then(response => {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -382,7 +388,8 @@ async function submitJuryEvaluation() {
   showToast('⏳ Submitting evaluation...');
 
   try {
-    const endpoint = 'https://script.google.com/macros/s/AKfycbxKnH7DtJItRhKOPCVOQ5hQf-SqNn3Lty1TfG4-656arls3pDJNB4PkUSb2rhizg3DJ/exec?action=submitJuryEvaluation';
+    const url = getJuryApiUrl();
+    const endpoint = url + (url.includes('?') ? '&' : '?') + 'action=submitJuryEvaluation';
     console.log('FINAL PAYLOAD', JSON.stringify(payload, null, 2));
     await submitJuryEvaluationViaForm(endpoint, payload);
 
