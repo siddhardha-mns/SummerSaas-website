@@ -39,11 +39,46 @@ body::before {
   letter-spacing:.2em; text-transform:uppercase; color:var(--accent);
   margin-bottom:3rem; display:flex; align-items:center; gap:.6rem;
 }
-.login-logo span { color:var(--text); }
 .login-card {
   background:var(--surface); border:1px solid var(--border);
   border-radius:16px; padding:2.5rem;
   box-shadow:0 0 60px rgba(108,99,255,.12);
+}
+.login-logo {
+  margin-bottom: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+.login-logo .brand-text {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.login-logo span { color:var(--text); }
+
+.brand-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+.brand-logo {
+  height: 40px;
+  object-fit: contain;
+}
+.nav-brand-logos {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-brand-logo {
+  height: 28px;
+  object-fit: contain;
 }
 .login-card h1 { font-size:1.6rem; font-weight:800; margin-bottom:.4rem; }
 .login-card p { color:var(--text-muted); font-size:.9rem; margin-bottom:2rem; }
@@ -79,7 +114,19 @@ body::before {
   background:rgba(10,10,15,.8); backdrop-filter:blur(12px);
   position:sticky; top:0; z-index:100;
 }
-.nav-logo { font-weight:800; font-size:1rem; letter-spacing:.15em; color:var(--accent); }
+.nav-logo { 
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-logo-text {
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: .05em;
+  color: var(--accent);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
 .nav-links { display:flex; gap:.25rem; }
 .nav-link {
   padding:.5rem .9rem; border-radius:8px; cursor:pointer;

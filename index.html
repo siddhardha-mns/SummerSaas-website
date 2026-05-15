@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>HackPortal — Hackathon Management</title>
+<title>CENTLE Hack Portal — SummerSaaS x DevCatalyst</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="css/styles.css"/>
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
@@ -14,7 +14,13 @@
 <!-- ══════════════════════════════════════ LOGIN PAGE ══ -->
 <div id="page-login" class="page active">
   <div class="login-wrap">
-    <div class="login-logo">⬡ <span>HackPortal</span></div>
+    <div class="login-logo">
+      <div class="brand-logos">
+        <img src="summersaas_logo.png" class="brand-logo" alt="SummerSaaS">
+        <img src="devcatalyst_transparent.png" class="brand-logo" alt="DevCatalyst">
+      </div>
+      <div class="brand-text">CENTLE <span>Hack Portal</span></div>
+    </div>
     <div class="login-card">
       <h1>Welcome back.</h1>
       <p>Sign in to access your hackathon dashboard.</p>
@@ -39,7 +45,11 @@
 <!-- ══════════════════════════════════════ PARTICIPANT PAGES ══ -->
 <div id="page-participant" class="page">
   <nav class="navbar">
-    <div class="nav-logo">⬡ HackPortal</div>
+    <div class="nav-logo">
+      <img src="summersaas_logo.png" class="nav-brand-logo" alt="SummerSaaS">
+      <img src="devcatalyst_transparent.png" class="nav-brand-logo" alt="DevCatalyst">
+      <span class="nav-logo-text">CENTLE <span>Portal</span></span>
+    </div>
     <div class="nav-links">
       <button class="nav-link active" onclick="switchParticipantTab('qr',this)">My Pass</button>
       <button class="nav-link" onclick="switchParticipantTab('announcements',this)">Announcements <span id="ann-badge" style="background:var(--accent);color:#fff;border-radius:100px;padding:.1rem .45rem;font-size:.7rem;margin-left:.2rem;display:none">3</span></button>
@@ -133,7 +143,11 @@
 <!-- ══════════════════════════════════════ ADMIN PAGE ══ -->
 <div id="page-admin" class="page">
   <nav class="navbar">
-    <div class="nav-logo">⬡ HackPortal <span style="color:var(--accent2);font-size:.75rem;margin-left:.4rem">ADMIN</span></div>
+    <div class="nav-logo">
+      <img src="summersaas_logo.png" class="nav-brand-logo" alt="SummerSaaS">
+      <img src="devcatalyst_transparent.png" class="nav-brand-logo" alt="DevCatalyst">
+      <span class="nav-logo-text">CENTLE <span>Admin</span></span>
+    </div>
     <div class="nav-links">
       <button class="nav-link active" onclick="switchAdminTab('overview',this)">Overview</button>
       <button class="nav-link" onclick="switchAdminTab('scanner',this)">Scanner</button>
@@ -432,7 +446,11 @@
 <!-- ══════════════════════════════════════ JURY PAGE ══ -->
 <div id="page-jury" class="page">
   <nav class="navbar">
-    <div class="nav-logo">⬡ HackPortal <span style="color:var(--accent);font-size:.75rem;margin-left:.4rem">JURY</span></div>
+    <div class="nav-logo">
+      <img src="summersaas_logo.png" class="nav-brand-logo" alt="SummerSaaS">
+      <img src="devcatalyst_transparent.png" class="nav-brand-logo" alt="DevCatalyst">
+      <span class="nav-logo-text">CENTLE <span>Jury</span></span>
+    </div>
     <div class="nav-links">
       <button class="nav-link active" onclick="switchJuryTab('search',this)">Search Teams</button>
       <button class="nav-link" onclick="switchJuryTab('evaluate',this)" style="display:none;" id="nav-eval-tab">Evaluate</button>
