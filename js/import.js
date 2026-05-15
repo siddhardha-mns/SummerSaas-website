@@ -2,7 +2,7 @@
 
 let _pendingCSVData = [];
 let _gsheetMode = 'apps-script'; // 'apps-script' or 'direct'
-let _appsScriptUrl = 'https://script.google.com/macros/s/AKfycbyJ62yFlR4DVKC1266QJYI4ta_hp0niv_yoMTAckkpGZucyW-CU2d_Cdfe11W3bQ6OP/exec';
+let _appsScriptUrl = 'https://script.google.com/macros/s/AKfycbxKnH7DtJItRhKOPCVOQ5hQf-SqNn3Lty1TfG4-656arls3pDJNB4PkUSb2rhizg3DJ/exec';
 
 // ─── MODE TOGGLE ──────────────────────────────────────
 function setGSheetMode(mode, el) {

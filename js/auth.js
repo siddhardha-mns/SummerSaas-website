@@ -4,15 +4,24 @@ function setRole(role, el) {
   document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
 
-  // Show password only for admin
+  // Show password only for admin and jury
   const userEl = document.getElementById('login-user');
   const passField = document.getElementById('password-field');
+  const userLabel = document.querySelector('#page-login .field label');
   if (role === 'admin') {
+    if (userLabel) userLabel.textContent = 'Username';
     userEl.placeholder = 'admin';
     userEl.value = 'admin';
     passField.style.display = 'block';
     document.getElementById('login-pass').value = '';
+  } else if (role === 'jury') {
+    if (userLabel) userLabel.textContent = 'Username';
+    userEl.placeholder = 'jury1';
+    userEl.value = '';
+    passField.style.display = 'block';
+    document.getElementById('login-pass').value = '';
   } else {
+    if (userLabel) userLabel.textContent = 'Email / ID';
     userEl.placeholder = 'your-registered@email.com';
     userEl.value = '';
     passField.style.display = 'none';
@@ -36,6 +45,25 @@ function doLogin() {
       return;
     } else {
       showToast('❌ Invalid Admin Credentials');
+      return;
+    }
+  }
+
+  // JURY CHECK — requires password
+  if (currentRole === 'jury') {
+    const pass = (document.getElementById('login-pass') || {}).value || '';
+    const validJuries = {
+      'jury1': 'summerjury1',
+      'jury2': 'summerjury2',
+      'jury3': 'summerjury3'
+    };
+    if (validJuries[user] && validJuries[user] === pass) {
+      if (typeof setupJuryPortal === 'function') setupJuryPortal(user);
+      showPage('page-jury');
+      showToast('Welcome, ' + user);
+      return;
+    } else {
+      showToast('❌ Invalid Jury Credentials');
       return;
     }
   }
@@ -123,6 +151,9 @@ function completeParticipantLogin(participant, user) {
 }
 
 function doLogout() {
+  currentRole = 'participant';
+  const defaultRoleTab = document.querySelector('.role-tab');
+  if (defaultRoleTab) setRole('participant', defaultRoleTab);
   showPage('page-login');
 }
 
