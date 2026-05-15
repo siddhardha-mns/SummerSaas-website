@@ -62,11 +62,14 @@ body::before {
 .login-logo span { color:var(--text); }
 
 .brand-logos {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: center;
   gap: 1.5rem;
+  width: 100%;
 }
+.brand-logos > img:first-child { justify-self: end; }
+.brand-logos > img:last-child { justify-self: start; }
 .brand-logo {
   height: 40px;
   object-fit: contain;
@@ -78,6 +81,14 @@ body::before {
 }
 .nav-brand-logo {
   height: 28px;
+  object-fit: contain;
+}
+.devcat-logo {
+  height: 200px;
+  object-fit: contain;
+}
+.nav-devcat-logo {
+  height: 140px;
   object-fit: contain;
 }
 .brand-x {
