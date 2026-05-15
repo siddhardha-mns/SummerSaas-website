@@ -55,6 +55,11 @@ function confirmCheckin() {
   const result = document.getElementById('checkin-result');
   const p = result._participant;
   if (p) {
+    if (p.status === 'checkedin') {
+      showToast(`⚠️ ${p.name} is already checked in!`);
+      result.className = 'checkin-result';
+      return;
+    }
     p.status = 'checkedin';
     p.time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
     showToast(`✅ ${p.name} checked in successfully!`);
@@ -93,10 +98,23 @@ function manualLookup() {
   if (found) {
     const result = document.getElementById('checkin-result');
     document.getElementById('cr-name').textContent = found.name + ' — ' + found.id;
+    
+    const isAlreadyCheckedIn = found.status === 'checkedin';
+    
     document.getElementById('cr-detail').textContent =
-      `Team: ${found.team} | Track: ${found.track} | Status: ${found.status === 'checkedin' ? '⚠️ Already checked in' : '✅ Ready to check in'}`;
-    result.className = 'checkin-result visible ' + (found.status === 'checkedin' ? 'error' : 'success');
+      `Team: ${found.team} | Track: ${found.track} | Status: ${isAlreadyCheckedIn ? '⚠️ Already checked in' : '✅ Ready to check in'}`;
+      
+    result.className = 'checkin-result visible ' + (isAlreadyCheckedIn ? 'error' : 'success');
     result._participant = found;
+    
+    const confirmBtn = document.querySelector('#checkin-result .btn-checkin.confirm');
+    if (confirmBtn) {
+      confirmBtn.style.display = isAlreadyCheckedIn ? 'none' : 'inline-block';
+    }
+    
+    if (isAlreadyCheckedIn) {
+      showToast(`⚠️ ${found.name} is already checked in!`);
+    }
   } else {
     showToast('❌ Participant not found');
   }
