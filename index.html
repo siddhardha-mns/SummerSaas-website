@@ -6,6 +6,7 @@
 <title>HackPortal — Hackathon Management</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="css/styles.css"/>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
 </head>
 <body>
@@ -195,15 +196,11 @@
       <div class="card">
         <div class="card-title"><span class="dot"></span> Camera Scanner</div>
         <div class="scanner-box">
-          <div class="scanner-viewport">
-            <div class="scanner-corner sc-tl"></div>
-            <div class="scanner-corner sc-tr"></div>
-            <div class="scanner-corner sc-bl"></div>
-            <div class="scanner-corner sc-br"></div>
-            <span style="color:var(--text-muted);font-size:.8rem;text-align:center;padding:1rem;z-index:1">Camera feed<br>appears here</span>
+          <div id="qr-reader" style="width: 100%; min-height: 250px; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.85rem; text-align: center;">
+            <div id="qr-reader-placeholder">Camera feed<br>appears here</div>
           </div>
           <div class="scanner-label">Point camera at participant QR code</div>
-          <button class="btn-scan" onclick="simulateScan()">▶ Simulate Scan</button>
+          <button class="btn-scan" id="btn-start-scanner" onclick="toggleScanner()">▶ Start Scanner</button>
           <div class="checkin-result" id="checkin-result">
             <div class="cr-name" id="cr-name">—</div>
             <div class="cr-detail" id="cr-detail">—</div>

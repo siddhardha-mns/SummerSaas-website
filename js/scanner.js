@@ -1,12 +1,54 @@
-// ─── QR SCANNER SIMULATION ────────────────────────────
-function simulateScan() {
-  const sample = participants[Math.floor(Math.random() * participants.length)];
-  const result = document.getElementById('checkin-result');
-  document.getElementById('cr-name').textContent = sample.name + ' — ' + sample.id;
-  document.getElementById('cr-detail').textContent =
-    `Team: ${sample.team} | Track: ${sample.track} | Status: ${sample.status === 'checkedin' ? '⚠️ Already checked in' : '✅ Ready to check in'}`;
-  result.className = 'checkin-result visible ' + (sample.status === 'checkedin' ? 'error' : 'success');
-  result._participant = sample;
+// ─── REAL CAMERA QR SCANNER ─────────────────────────────
+let html5QrCode;
+let isScannerRunning = false;
+
+function toggleScanner() {
+  const btn = document.getElementById('btn-start-scanner');
+  const placeholder = document.getElementById('qr-reader-placeholder');
+  
+  if (isScannerRunning) {
+    if (html5QrCode) {
+      html5QrCode.stop().then(() => {
+        isScannerRunning = false;
+        btn.innerHTML = '▶ Start Scanner';
+        if (placeholder) placeholder.style.display = 'block';
+      }).catch(err => console.error("Failed to stop scanner.", err));
+    }
+  } else {
+    if (!html5QrCode) {
+      html5QrCode = new Html5Qrcode("qr-reader");
+    }
+    
+    if (placeholder) placeholder.style.display = 'none';
+    
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 220, height: 220 } },
+      (decodedText) => {
+        // Stop the scanner momentarily on success to avoid double-scans
+        if (isScannerRunning) {
+           toggleScanner();
+           handleScannedCode(decodedText);
+        }
+      },
+      (errorMessage) => { /* ignore */ }
+    ).then(() => {
+      isScannerRunning = true;
+      btn.innerHTML = '⏹ Stop Scanner';
+    }).catch(err => {
+      console.error("Failed to start scanner.", err);
+      showToast('⚠️ Could not start camera. Check permissions.');
+      if (placeholder) placeholder.style.display = 'block';
+    });
+  }
+}
+
+function handleScannedCode(code) {
+  const inputEl = document.getElementById('manual-lookup-input');
+  if (inputEl) {
+    inputEl.value = code;
+    manualLookup();
+  }
 }
 
 function confirmCheckin() {
